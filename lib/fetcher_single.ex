@@ -1,0 +1,3 @@
+defmodule FetcherSingle do
+  
+end
