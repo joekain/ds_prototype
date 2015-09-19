@@ -1,9 +1,18 @@
 defmodule Unshortener do
+
+  # Field name "location" is case insensitive in HTTP so use downcase
+  defp canonical_field_name(key) do
+    key
+    |> Atom.to_string
+    |> String.downcase
+  end
+
   defp location(headers) do
-    case Keyword.get(headers, :Location) do
-      nil      -> Keyword.get(headers, :location)
-      location -> location
-    end
+    {_key, value} = Enum.find(headers, nil, fn {key, value} ->
+      canonical_field_name(key) == "location"
+    end)
+
+    value
   end
 
   @spec expand(String.t) :: String.t
