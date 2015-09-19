@@ -12,4 +12,8 @@ defmodule UnshortenerTest do
   test "it reports error for bad URLs" do
     assert Unshortener.expand("http://garbage.example.com") == :error
   end
+
+  test "it can unshorten double shortened URLs" do
+    assert Unshortener.expand("http://t.co/kfLrRZJ1cI") == "http://learningelixir.joekain.com/how-I-learned-elixir/?utm_content=buffer9a56c&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer"
+  end
 end
