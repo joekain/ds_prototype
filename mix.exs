@@ -14,7 +14,7 @@ defmodule P1.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger]]
+    [applications: [:logger, :httpotion]]
   end
 
   # Dependencies can be Hex packages:
@@ -29,7 +29,9 @@ defmodule P1.Mixfile do
   defp deps do
     [
       {:oauth, github: "tim/erlang-oauth"},
-      {:extwitter, "~> 0.2"}
+      {:extwitter, "~> 0.2"},
+      {:ibrowse, github: "cmullaparthi/ibrowse", tag: "v4.1.2"},
+      {:httpotion, "~> 2.1.0"}
     ]
   end
 end
