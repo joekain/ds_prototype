@@ -4,6 +4,8 @@ defmodule P1 do
   end
 
   def stream do
-    Fetcher.fetch #|> Parser.urls |> Unshortener.expand
+    Fetcher.fetch
+    |> Stream.flat_map(fn x -> Parser.urls(x) end)
+    |> Stream.map(fn x -> Unshortener.expand(x) end)
   end
 end
