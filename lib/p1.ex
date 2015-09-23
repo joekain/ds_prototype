@@ -4,11 +4,11 @@ defmodule P1 do
   end
 
   defp start_task(record) do
-    Task.async(fn ->
-      Parser.urls(record) |> Enum.map(fn x ->
-        Unshortener.expand(x)
-      end)
-    end)
+    Task.async(fn -> Unshortener.expand(record) end)
+  end
+
+  defp start_tasks(records) do
+    records |> Enum.map(&start_task/1)
   end
 
   defp await_tasks(list_of_tasks) do
@@ -18,7 +18,9 @@ defmodule P1 do
 
   def stream do
     Fetcher.fetch  # Stream of Tweets
-    |> Stream.map(fn x -> start_task(x) end)  # Stream of `Task`s each processing a Tweet
+    |> Stream.flat_map(&Parser.urls(&1))
+    |> Stream.chunk(5)  # Stream of lists with 5 Tweets each
+    |> Stream.flat_map(&start_tasks/1) # Stream of `Tasks`
     |> Stream.chunk(5)  # Stream of lists with 5 `Tasks` each
     |> Stream.flat_map(&await_tasks/1) # Stream of resulting URLs
   end
