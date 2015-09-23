@@ -3,9 +3,15 @@ defmodule P1 do
     [ FetcherSingle.fetch |> Parser.urls |> Unshortener.expand ]
   end
 
+  defp start_task(record) do
+    Task.async(fn ->
+      Parser.urls(record) |> Enum.map(fn x -> Unshortener.expand(x) end)
+    end)
+  end
+
   def stream do
-    Fetcher.fetch
-    |> Stream.flat_map(fn x -> Parser.urls(x) end)
-    |> Stream.map(fn x -> Unshortener.expand(x) end)
+    Fetcher.fetch  # Stream of tweets
+    |> Stream.map(fn x -> start_task(x) end)  # Stream of `Task`s
+    |> Stream.flat_map(fn x -> Task.await(x) end) # Stream of results - arrays of URLs
   end
 end
