@@ -4,10 +4,11 @@ defmodule P1 do
   end
 
   def lazy_urls do
-    Fetcher.fetch |> Stream.flat_map(fn tweet -> Parser.urls(tweet) end)
   end
 
   def stream do
-    Processor.map(&lazy_urls/0, fn url -> Unshortener.expand(url) end)
+    Fetcher.fetch
+    |> Stream.flat_map(fn tweet -> Parser.urls(tweet) end)
+    |> Processor.map(fn url -> Unshortener.expand(url) end)
   end
 end

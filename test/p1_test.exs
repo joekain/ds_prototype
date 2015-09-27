@@ -6,6 +6,6 @@ defmodule P1Test do
   end
 
   test "it should just stream out URLs from the firehose" do
-    P1.stream |> Stream.map(fn x -> IO.inspect x end) |> Enum.take(20) |> Enum.to_list
+    P1.stream |> Stream.map(fn x -> IO.inspect x end) |> Enum.take(10) |> Enum.to_list
   end
 end

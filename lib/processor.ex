@@ -7,36 +7,20 @@ defmodule Processor do
     defcast stop, do: stop_server(:normal)
   end
 
-
-  use ExActor.GenServer
-
   defp process(x, f) do
     {:ok, pid} = Subprocessor.start_link(f, x)
     pid
   end
 
-  defstart start_link(lazy_input_stream, f) do
-    {:ok, queue} = BlockingQueue.start_link(5)
+  defp post_process(pid) do
+    result = Subprocessor.get(pid)
+    Subprocessor.stop(pid)
 
-    spawn_link(fn ->
-      lazy_input_stream.()
-      |> Stream.map(fn x -> process(x, f) end)
-      |> Enum.each(fn x -> BlockingQueue.push(queue, x) end)
-    end)
-
-    initial_state(queue)
-  end
-
-  defcall next, state: queue do
-    sub = BlockingQueue.pop(queue)
-    result = Subprocessor.get(sub)
-    Subprocessor.stop(sub)
-
-    reply(result)
+    result
   end
 
   def map(input_stream, f) do
-    {:ok, pid} = start_link(input_stream, f)
-    Stream.repeatedly(fn -> next(pid) end)
+    Decoupler.process(fn -> input_stream end, fn x -> process(x, f) end, 5)
+    |> Stream.map(&post_process/1)
   end
 end
