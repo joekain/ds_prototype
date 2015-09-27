@@ -32,7 +32,6 @@ defmodule P1.Mixfile do
       {:extwitter, "~> 0.2"},
       {:ibrowse, github: "cmullaparthi/ibrowse", tag: "v4.1.2"},
       {:httpotion, "~> 2.1.0"},
-      {:exactor, "~> 2.2.0"},
       {:blocking_queue, "~> 1.0.0"}
     ]
   end
