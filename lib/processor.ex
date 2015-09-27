@@ -1,20 +1,12 @@
 defmodule Processor do
-  defmodule Subprocessor do
-    use ExActor.GenServer
-
-    defstart start_link(f, x), do: initial_state(f.(x))
-    defcall get, state: state, do: reply(state)
-    defcast stop, do: stop_server(:normal)
-  end
-
   defp process(x, f) do
-    {:ok, pid} = Subprocessor.start_link(f, x)
+    {:ok, pid} = Agent.start_link(fn -> f.(x) end)
     pid
   end
 
   defp post_process(pid) do
-    result = Subprocessor.get(pid)
-    Subprocessor.stop(pid)
+    result = Agent.get(pid, fn x -> x end)
+    Agent.stop(pid)
 
     result
   end
