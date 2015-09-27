@@ -2,7 +2,7 @@ defmodule P1.Processor do
   use ExUnit.Case
 
   def infinite_stream do
-    Stream.cycle [1]
+    fn -> Stream.cycle [1] end
   end
 
   def identity_processor do
