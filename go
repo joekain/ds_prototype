@@ -2,4 +2,9 @@
 
 . .access
 
-mix test
+if [ "$1" == "iex" ]; then
+  iex -S mix
+  exit
+else
+  mix test
+fi
