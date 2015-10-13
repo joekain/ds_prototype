@@ -3,8 +3,8 @@ defmodule Worker do
 
   defstart start_link(_), do: initial_state(0)
 
-  defcast work(queue, x) do
-    BlockingQueue.push(queue, {self, x + 1})
+  defcast work(queue, url) do
+    BlockingQueue.push(queue, {self, Unshortener.expand(url)})
     new_state(0)
   end
 end

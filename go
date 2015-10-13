@@ -7,5 +7,9 @@ if [ "$1" == "iex" ]; then
   exit
 else
   mix test
-  mix run -e P1.stream_run
+  echo "\nQueue based Processor"
+  time mix run -e P1.stream_run
+
+  echo "\nPool based processing"
+  time mix run -e P1.Pool.run
 fi

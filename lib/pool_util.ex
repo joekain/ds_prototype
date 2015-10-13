@@ -20,8 +20,9 @@ defmodule PoolUtil do
 
   defp stream_through_pool(enum, pool, queue) do
     enum
-    |> Enum.map(fn x -> {x, :poolboy.checkout(pool)} end)
-    |> Enum.map(fn {x, worker} -> Worker.work(worker, queue, x) end)
+    |> Stream.map(fn x -> {x, :poolboy.checkout(pool)} end)
+    |> Stream.map(fn {x, worker} -> Worker.work(worker, queue, x) end)
+    |> Stream.run
   end
 
   defp extract_and_checkin(stream, pool) do
