@@ -27,10 +27,21 @@ defmodule P1 do
     ]
   end
 
+  defp configure_extwitter do
+    ExTwitter.configure [
+       consumer_key: System.get_env("TWITTER_CONSUMER_KEY"),
+       consumer_secret: System.get_env("TWITTER_CONSUMER_SECRET"),
+       access_token: System.get_env("TWITTER_ACCESS_TOKEN"),
+       access_token_secret: System.get_env("TWITTER_ACCESS_SECRET")
+    ]
+  end
+
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
+
+    configure_extwitter
 
     children = [
       :poolboy.child_spec(pool_name(), poolboy_config(), [])
