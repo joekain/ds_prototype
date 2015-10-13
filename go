@@ -7,4 +7,5 @@ if [ "$1" == "iex" ]; then
   exit
 else
   mix test
+  mix run -e P1.stream_run
 fi
