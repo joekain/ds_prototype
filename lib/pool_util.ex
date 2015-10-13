@@ -1,12 +1,10 @@
 defmodule PoolUtil do
-  def into(enum, col, opts) do
-    pool = opts[:via]
+  def map_through_pool(enum, pool) do
     {:ok, queue} = BlockingQueue.start_link(:infinity)
 
     enum
     |> resource(pool, queue)
     |> extract_and_checkin(pool)
-    |> Stream.into(col, fn x -> x end)
   end
 
   defp resource(enum, pool, queue) do
